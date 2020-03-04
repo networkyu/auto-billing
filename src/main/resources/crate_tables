@@ -1,0 +1,64 @@
+CREATE TABLE `wechatpay` (
+  `datetime` datetime NOT NULL,
+  `transaction_type` varchar(100) DEFAULT NULL,
+  `counterparty_name` varchar(100) DEFAULT NULL,
+  `product_name` varchar(100) DEFAULT NULL,
+  `ie_type` varchar(100) DEFAULT NULL,
+  `amount` decimal(10,2) DEFAULT NULL,
+  `payment_method` varchar(100) DEFAULT NULL,
+  `current_status` varchar(100) DEFAULT NULL,
+  `transaction_number` varchar(100) NOT NULL,
+  `merchant_order_number` varchar(100) DEFAULT NULL,
+  `note` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`transaction_number`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `alipay` (
+  `transaction_number` varchar(100) NOT NULL,
+  `merchant_order_number` varchar(100) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `pay_date` datetime DEFAULT NULL,
+  `modify_date` datetime DEFAULT NULL,
+  `transaction_source` varchar(100) DEFAULT NULL,
+  `counterparty_name` varchar(100) DEFAULT NULL,
+  `product_name` varchar(100) DEFAULT NULL,
+  `type` varchar(100) DEFAULT NULL,
+  `amount` decimal(10,2) DEFAULT NULL,
+  `ie_type` varchar(100) DEFAULT NULL,
+  `trading_status` varchar(100) DEFAULT NULL,
+  `service_fee` decimal(10,2) DEFAULT NULL,
+  `successful_refund` decimal(10,2) DEFAULT NULL,
+  `note` varchar(100) DEFAULT NULL,
+  `funding_status` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`transaction_number`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `cmb` (
+  `datetime` datetime DEFAULT NULL,
+  `date` date NOT NULL,
+  `time` time NOT NULL,
+  `income` decimal(10,2) DEFAULT NULL,
+  `expenditure` decimal(10,2) DEFAULT NULL,
+  `balance` decimal(10,2) NOT NULL,
+  `transaction_type` varchar(100) DEFAULT NULL,
+  `transaction_notes` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`date`,`time`,`balance`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `abc` (
+  `datetime` datetime DEFAULT NULL,
+  `date` date NOT NULL,
+  `time` time NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `balance` decimal(10,2) NOT NULL,
+  `counterparty_name` varchar(100) DEFAULT NULL,
+  `counterparty_account` varchar(100) DEFAULT NULL,
+  `trading_bank` varchar(100) DEFAULT NULL,
+  `trading_channels` varchar(100) DEFAULT NULL,
+  `transaction_type` varchar(100) DEFAULT NULL,
+  `transaction_purpose` varchar(100) DEFAULT NULL,
+  `trading_summary` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`date`,`time`,`amount`,`balance`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='储存农业银行数据';
+
+
