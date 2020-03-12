@@ -1,10 +1,12 @@
 package cn.ccut.ylp;
 
+import cn.ccut.ylp.date.AutoConvertDate;
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.math.BigDecimal;
 import java.sql.*;
 import java.text.ParseException;
+import java.util.ArrayList;
 
 public class CmbDB {
     public ConnectionDB connectionDB;
@@ -46,15 +48,8 @@ public class CmbDB {
         }
         CmbEntity e = new CmbEntity();
         try {
-            e.date = new Date(DateUtils.parseDate(m.date,"yyyyMMdd").getTime());
-            if (m.time.equals("")){
-                e.time = null;
-            } else {
-                int hour = Integer.valueOf(m.time.substring(0,2));
-                int minute =  Integer.valueOf(m.time.substring(3,5));
-                int second =  Integer.valueOf(m.time.substring(6,8));
-                e.time =  new Time(hour,minute,second);
-            }
+            e.date = new Date(AutoConvertDate.convert(m.date).getTime());
+            e.time =  AutoConvertDate.getSqlTime(m.time);
             if (!m.income.equals("")){
                 e.income = new BigDecimal(m.income);
             }
@@ -62,7 +57,7 @@ public class CmbDB {
                 e.expenditure = new BigDecimal(m.expenditure);
             }
             e.balance = new BigDecimal(m.balance);
-            e.datetime = DateUtils.parseDate(m.datetime,"yyyyMMddHH:mm:ss");
+            e.datetime = AutoConvertDate.convert(m.datetime);
         } catch (Exception ex){
             System.out.println("数据转换失败，非法数据,未保存到数据库,数据为："+m.datetime+"金额为："+m.balance);
             ex.printStackTrace();
@@ -71,6 +66,82 @@ public class CmbDB {
         e.transactionType = m.transactionType;
         e.transactionNotes = m.transactionNotes;
         return e;
+    }
+    /**
+     * 将sql查询结果转换为实体数组。
+     * @param r sql查询返回的结果
+     * @param colNames 查询的字段名称列。
+     * @return
+     */
+    public ArrayList<CmbEntity> readFromResultSet(ResultSet r, String[] colNames){
+        ArrayList<CmbEntity> lists = new ArrayList<CmbEntity>();
+        // 是否查询全部元素。
+        boolean total = colNames==null ? true : false;
+        //如果为空，说明查询全部。
+        try {
+            while (r.next()){
+                Cmbm m = new Cmbm();
+                if (total){
+                    m.datetime = r.getString(1);
+                    m.date = r.getString(2);
+                    m.time = r.getString(3);
+                    m.income = r.getString(4);
+                    m.expenditure = r.getString(5);
+                    m.balance = r.getString(6);
+                    m.transactionType = r.getString(7);
+                    m.transactionNotes = r.getString(8);
+                } else {
+                    // 列索引，从1开始。
+                    int index = 0;
+                    for (int i= 0;i<colNames.length;i++){
+                        String colName = colNames[i];
+                        index = index + 1;
+                        switch (colName){
+                            case "datetime":
+                                m.datetime = r.getString(index);
+                                break;
+                            case "date":
+                                m.date = r.getString(index);
+                                break;
+                            case "time":
+                                m.time = r.getString(index);
+                                break;
+                            case "income":
+                                m.income = r.getString(index);
+                                break;
+                            case "expenditure":
+                                m.expenditure = r.getString(index);
+                                break;
+                            case "balance":
+                                m.balance = r.getString(index);
+                                break;
+                            case "transactionType":
+                                m.transactionType = r.getString(index);
+                                break;
+                            case "transactionNotes":
+                                m.transactionNotes = r.getString(index);
+                                break;
+                            default:
+                                index = index - 1;
+                        }
+                    }
+                }
+                try {
+                    CmbEntity e = convert(m);
+                    lists.add(e);
+                } catch (ParseException ex){
+                    ex.printStackTrace();
+                    System.out.println("农行转换数据失败，数据为："+m.datetime+m.expenditure+m.income + m.transactionNotes);
+                }
+            }
+        }catch (SQLException e){
+            System.out.println("从数据库中读取数据失败！");
+        }
+        return lists;
+    }
+    //select count(*) from information_schema.COLUMNS where table_name='abc';查表中有多少列。
+    public ArrayList<CmbEntity> readFromResultSet(ResultSet r){
+        return readFromResultSet(r,null);
     }
     public static void main(String[] args) throws ParseException {
         Cmbm m = new Cmbm();
@@ -82,7 +153,7 @@ public class CmbDB {
         m.balance ="500";
         m.transactionType = "转账";
         m.transactionNotes = "测试数据";
-        Abc a = new Abc();
+        Cmb a = new Cmb();
         CmbDB d = new CmbDB();
         CmbEntity e = d.convert(m);
         d.insert(e);

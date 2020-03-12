@@ -28,19 +28,19 @@ public class ReadCSV {
         // 读取CSV文件
         String filePath = Global.basePath;
         String fileName = "招商全部账单.csv";
-        readCSV(filePath + fileName);
+        readCSV(filePath + fileName,"gbk");
     }
 
     /**
      * 读取CSV文件
      * @param filePath:全路径名
      */
-    public static ArrayList<ArrayList<String>> readCSV(String filePath) throws Exception {
+    public static ArrayList<ArrayList<String>> readCSV(String filePath,String encoding) throws Exception {
         CsvReader reader = null;
         ArrayList<ArrayList<String>> rows = new ArrayList<ArrayList<String>>();
         try {
             //如果生产文件乱码，windows下用gbk，linux用UTF-8
-            reader = new CsvReader(filePath, separator, Charset.forName("utf-8"));
+            reader = new CsvReader(filePath, separator, Charset.forName(encoding));
             // 读取表头
             reader.readHeaders();
             // 逐条读取记录，直至读完

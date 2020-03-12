@@ -1,8 +1,11 @@
 package cn.ccut.ylp;
 
+import cn.ccut.ylp.File.SpirePdf;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class Cmb {
     // 首先读取excel文件，然后将文件中的数据读取出来保存到模型中。
@@ -13,12 +16,12 @@ public class Cmb {
         String filePathName = filePath + fileName;
         ReadCSV read = new ReadCSV();
         try {
-            ArrayList<ArrayList<String>> rows =  read.readCSV(filePathName);
+            ArrayList<ArrayList<String>> rows =  read.readCSV(filePathName,"gbk");
             for (int j = 0;j<rows.size();j++){
                 //将读取到的数据保存到数据库。
                 ArrayList<String> row = rows.get(j);
                 if (row.size() < 7){
-                    // 当行数小于11时不是需要的数据。
+                    // 当行数小于7时不是需要的数据。
                     continue;
                 }
                 Cmbm m = new Cmbm();

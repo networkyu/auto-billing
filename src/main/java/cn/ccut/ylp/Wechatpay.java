@@ -21,6 +21,7 @@ public class Wechatpay {
         int gap = 3;
         String dateFS = "yyyyMMdd";
         String basePath = Global.basePath;
+        basePath = basePath+"微信3月excel\\";
         String fixedName ="微信支付账单";
         String zipSuffix = ".zip";
         String csvSuffix = ".csv";
@@ -80,7 +81,7 @@ public class Wechatpay {
             spliceString.append(csvSuffix);
             try {
                 //System.out.println("读取文件路径为："+ spliceString.toString());
-                ArrayList<ArrayList<String>> rows =  read.readCSV(spliceString.toString());
+                ArrayList<ArrayList<String>> rows =  read.readCSV(spliceString.toString(),"utf-8");
                 for (int j = 0;j<rows.size();j++){
                     //将读取到的数据保存到数据库。
                     ArrayList<String> row = rows.get(j);

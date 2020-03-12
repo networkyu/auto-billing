@@ -1,5 +1,6 @@
 package cn.ccut.ylp;
 
+import cn.ccut.ylp.date.AutoConvertDate;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
@@ -8,6 +9,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.text.ParseException;
+import java.util.ArrayList;
 
 public class WechatpayDB {
     public ConnectionDB connectionDB;
@@ -53,7 +55,7 @@ public class WechatpayDB {
         }
         WechatpayEntity e = new WechatpayEntity();
         try {
-            e.datetime = DateUtils.parseDate(m.datetime,"yyyy-MM-dd HH:mm:ss");
+            e.datetime = AutoConvertDate.convert(m.datetime);
             e.transactionType=m.transactionType;
 
             // 对方户名
@@ -74,6 +76,94 @@ public class WechatpayDB {
             return null;
         }
         return e;
+    }
+    /**
+     * 将sql查询结果转换为实体数组。
+     * @param r sql查询返回的结果
+     * @param colNames 查询的字段名称列。
+     * @return
+     */
+    public ArrayList<WechatpayEntity> readFromResultSet(ResultSet r, String[] colNames){
+        ArrayList<WechatpayEntity> lists = new ArrayList<WechatpayEntity>();
+        // 是否查询全部元素。
+        boolean total = colNames==null ? true : false;
+        //如果为空，说明查询全部。
+        try {
+            while (r.next()){
+                Wechatpaym m = new Wechatpaym();
+                if (total){
+                    m.datetime = r.getString(1);
+                    m.transactionType = r.getString(2);
+                    m.counterpartyName = r.getString(3);
+                    m.productName = r.getString(4);
+                    m.ieType = r.getString(5);
+                    m.amount = r.getString(6);
+                    m.paymentMethod = r.getString(7);
+                    m.currentStatus = r.getString(8);
+                    m.transactionNumber = r.getString(9);
+                    m.merchantOrderNumber = r.getString(10);
+                    m.note = r.getString(11);
+                } else {
+                    // 列索引，从1开始。
+                    int index = 0;
+                    for (int i= 0;i<colNames.length;i++){
+                        String colName = colNames[i];
+                        index = index + 1;
+                        switch (colName){
+                            case "datetime":
+                                m.datetime = r.getString(index);
+                                break;
+                            case "transactionType":
+                                m.transactionType = r.getString(index);
+                                break;
+                            case "counterpartyName":
+                                m.counterpartyName = r.getString(index);
+                                break;
+                            case "productName":
+                                m.productName = r.getString(index);
+                                break;
+                            case "ieType":
+                                m.ieType = r.getString(index);
+                                break;
+                            case "amount":
+                                m.amount = r.getString(index);
+                                break;
+                            case "paymentMethod":
+                                m.paymentMethod = r.getString(index);
+                                break;
+                            case "currentStatus":
+                                m.currentStatus = r.getString(index);
+                                break;
+                            case "transactionNumber":
+                                m.transactionNumber = r.getString(index);
+                                break;
+                            case "merchantOrderNumber":
+                                m.merchantOrderNumber = r.getString(index);
+                                break;
+                            case "note":
+                                m.note = r.getString(index);
+                                break;
+                            default:
+                                index = index - 1;
+                        }
+                    }
+                }
+                try {
+                    WechatpayEntity e = convert(m);
+                    lists.add(e);
+                } catch (ParseException ex){
+                    ex.printStackTrace();
+                    System.out.println("农行转换数据失败，数据为："+m.datetime+m.amount+m.counterpartyName);
+                }
+            }
+        }catch (SQLException e){
+            System.out.println("从数据库中读取数据失败！");
+        }
+        return lists;
+    }
+    //select count(*) from information_schema.COLUMNS where table_name='abc';查表中有多少列。
+    public ArrayList<WechatpayEntity> readFromResultSet(ResultSet r){
+        return readFromResultSet(r,null);
     }
     public static void main(String[] args) throws ParseException {
         Wechatpaym m = new Wechatpaym();

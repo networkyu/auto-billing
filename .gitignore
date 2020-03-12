@@ -1,5 +1,7 @@
 *.agdai
+check.sql
 .idea
+logs
 target
 auto-billing.iml
 MAlonzo/**

@@ -13,7 +13,7 @@ public class Alipay {
         String filePathName = filePath + fileName;
         ReadCSV read = new ReadCSV();
         try {
-            ArrayList<ArrayList<String>> rows =  read.readCSV(filePathName);
+            ArrayList<ArrayList<String>> rows =  read.readCSV(filePathName,"gbk");
             for (int j = 0;j<rows.size();j++){
                 //将读取到的数据保存到数据库。
                 ArrayList<String> row = rows.get(j);

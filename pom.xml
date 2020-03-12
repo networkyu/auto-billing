@@ -6,7 +6,14 @@
 
     <groupId>org.example</groupId>
     <artifactId>auto-billing</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>7.1.9</version>
+    <repositories>
+        <repository>
+            <id>com.e-iceblue</id>
+            <name>e-iceblue</name>
+            <url>http://repo.e-iceblue.com/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <plugin>
@@ -62,6 +69,78 @@
             <artifactId>zip4j</artifactId>
             <version>1.3.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.13.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.13.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.19</version>
+        </dependency>
+        <dependency>
+            <groupId> e-iceblue </groupId>
+            <artifactId>spire.pdf</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+<!--        https://mvnrepository.com/artifact/com.itextpdf/itextpdf-->
+<!--        <dependency>-->
+<!--            <groupId>com.itextpdf</groupId>-->
+<!--            <artifactId>barcodes</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.itextpdf</groupId>-->
+<!--            <artifactId>font-asian</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.itextpdf</groupId>-->
+<!--            <artifactId>forms</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.itextpdf</groupId>-->
+<!--            <artifactId>hyph</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.itextpdf</groupId>-->
+<!--            <artifactId>io</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.itextpdf</groupId>-->
+<!--            <artifactId>kernel</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.itextpdf</groupId>-->
+<!--            <artifactId>layout</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.itextpdf</groupId>-->
+<!--            <artifactId>pdfa</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.itextpdf</groupId>-->
+<!--            <artifactId>sign</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.13</version>
+        </dependency>
     </dependencies>
 </project>

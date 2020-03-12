@@ -61,4 +61,15 @@ CREATE TABLE `abc` (
   PRIMARY KEY (`date`,`time`,`amount`,`balance`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='储存农业银行数据';
 
+CREATE TABLE `cmb_pdf` (
+  `no` int(11) NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `currency` varchar(45) DEFAULT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `balance` decimal(10,2) NOT NULL,
+  `transaction_type` varchar(100) DEFAULT NULL,
+  `counter_party` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`no`,`date`)
+) ENGINE=MyISAM AUTO_INCREMENT=444 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 

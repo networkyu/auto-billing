@@ -1,13 +1,17 @@
 package cn.ccut.ylp;
 
+import cn.ccut.ylp.date.AutoConvertDate;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.sql.*;
 import java.text.ParseException;
+import java.util.ArrayList;
 
 public class AlipayDB {
     public ConnectionDB connectionDB;
@@ -15,6 +19,7 @@ public class AlipayDB {
     public Connection conn=null;
     public PreparedStatement ps=null;
     public ResultSet rs=null;
+    protected static final Logger logger = LogManager.getLogger();
     public boolean insert(AlipayEntity e){
         String sql = "INSERT INTO `bill`.`alipay` (" +
                 "`transaction_number`, `merchant_order_number`, `create_date`, `pay_date`, " +
@@ -72,10 +77,6 @@ public class AlipayDB {
         }
         AlipayEntity e = new AlipayEntity();
         try {
-//            DateConverter converter = new DateConverter();
-//            converter.setPattern(new String("yyyy/MM/dd HH:mm:ss"));
-//            BeanUtils.register(converter,Date.class);
-//            BeanUtils.copyProperties(e,m);
             e.transactionNumber = m.transactionNumber;
             // 商家订单号。
             e.merchantOrderNumber = m.merchantOrderNumber;
@@ -89,13 +90,11 @@ public class AlipayDB {
             e.tradingStatus=m.tradingStatus;
             e.note = m.note;
             e.fundingStatus = m.fundingStatus;
-            e.createDate = DateUtils.parseDate(m.createDate,"yyyy-MM-dd HH:mm:ss");
+            e.createDate = AutoConvertDate.convert(m.createDate);
             if(!m.payDate.equals("")){
-                e.payDate = DateUtils.parseDate(m.payDate,"yyyy-MM-dd HH:mm:ss");
+                e.payDate = AutoConvertDate.convert(m.payDate);
             }
-            if (!m.modifyDate.equals("")){
-                e.modifyDate = DateUtils.parseDate(m.modifyDate,"yyyy-MM-dd HH:mm:ss");
-            }
+            e.modifyDate = AutoConvertDate.convert(m.modifyDate);
             e.amount = new BigDecimal(m.amount);
             e.serviceFee = new BigDecimal(m.serviceFee);
             e.successfulRefund = new BigDecimal(m.successfulRefund);
@@ -105,6 +104,115 @@ public class AlipayDB {
             return null;
         }
         return e;
+    }
+    /**
+     * 将sql查询结果转换为实体数组。
+     * @param r sql查询返回的结果
+     * @param colNames 查询的字段名称列。
+     * @return
+     */
+    public ArrayList<AlipayEntity> readFromResultSet(ResultSet r, String[] colNames){
+        ArrayList<AlipayEntity> lists = new ArrayList<AlipayEntity>();
+        // 是否查询全部元素。
+        boolean total = colNames==null ? true : false;
+        //如果为空，说明查询全部。
+        try {
+            while (r.next()){
+                Alipaym m = new Alipaym();
+                if (total){
+
+                    m.transactionNumber = r.getString(1);
+                    m.merchantOrderNumber = r.getString(2);
+                    m.createDate = r.getString(3);
+                    m.payDate = r.getString(4);
+                    m.modifyDate = r.getString(5);
+                    m.transactionSource = r.getString(6);
+                    m.counterpartyName = r.getString(7);
+                    m.productName = r.getString(8);
+                    m.type = r.getString(9);
+                    m.amount = r.getString(10);
+                    m.ieType = r.getString(11);
+                    m.tradingStatus = r.getString(12);
+                    m.serviceFee = r.getString(13);
+                    m.successfulRefund = r.getString(14);
+                    m.note = r.getString(15);
+                    m.fundingStatus = r.getString(16);
+                } else {
+                    // 列索引，从1开始。
+                    int index = 0;
+                    for (int i= 0;i<colNames.length;i++){
+                        String colName = colNames[i];
+                        index = index + 1;
+                        switch (colName){
+                            case "transactionNumber":
+                                m.transactionNumber = r.getString(index);
+                                break;
+                            case "merchantOrderNumber":
+                                m.merchantOrderNumber = r.getString(index);
+                                break;
+                            case "createDate":
+                                m.createDate = r.getString(index);
+                                break;
+                            case "payDate":
+                                m.payDate = r.getString(index);
+                                break;
+                            case "modifyDate":
+                                m.modifyDate = r.getString(index);
+                                break;
+                            case "transactionSource":
+                                m.transactionSource = r.getString(index);
+                                break;
+                            case "counterpartyName":
+                                m.counterpartyName = r.getString(index);
+                                break;
+                            case "productName":
+                                m.productName = r.getString(index);
+                                break;
+                            case "type":
+                                m.type = r.getString(index);
+                                break;
+                            case "amount":
+                                m.amount = r.getString(index);
+                                break;
+                            case "ieType":
+                                m.ieType = r.getString(index);
+                                break;
+                            case "tradingStatus":
+                                m.tradingStatus = r.getString(index);
+                                break;
+                            case "serviceFee":
+                                m.serviceFee = r.getString(index);
+                                break;
+                            case "successfulRefund":
+                                m.successfulRefund = r.getString(index);
+                                break;
+                            case "note":
+                                m.note = r.getString(index);
+                                break;
+                            case "fundingStatus":
+                                m.fundingStatus = r.getString(index);
+                                break;
+                            default:
+                                index = index - 1;
+                        }
+                    }
+                }
+                try {
+                    AlipayEntity e = convert(m);
+                    lists.add(e);
+                } catch (ParseException ex){
+                    ex.printStackTrace();
+                    System.out.println("支付宝转换数据失败，数据为："+m.payDate+m.amount+m.counterpartyName);
+                }
+            }
+        }catch (SQLException e){
+            System.out.println("从数据库中读取数据失败！");
+        }
+        return lists;
+    }
+    //select count(*) from information_schema.COLUMNS where table_name='abc';查表中有多少列。
+    public ArrayList<AlipayEntity> readFromResultSet(ResultSet r){
+        return readFromResultSet(r,null);
     }
     public static void main(String[] args) throws ParseException {
         Alipaym m = new Alipaym();
